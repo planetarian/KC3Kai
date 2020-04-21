@@ -63,33 +63,8 @@
 	// React components
 	//
 
-	var e = React.createElement;
-
-	class DaybreakPanel extends React.Component {
-		constructor(props) {
-			super(props);
-			this.state = {date: new Date()};
-		}
-		componentDidMount() {
-			this.timerID = setInterval(() => this.tick(), 1000);
-		}
-		componentWillUnmount() {
-			clearInterval(this.timerID);
-		}
-		tick() {
-			this.setState({
-				date: new Date()
-			});
-		}
-		render() { 
-			return e('div', null, `Hello world! ${this.state.date}`);
-		}
-	}
-
-
-	function render() {
-		ReactDOM.render(e(DaybreakPanel, null, null), document.querySelector('#root'));
-	}
-	setInterval(() => render(), 1000);
+	var re = React.createElement;
+	var panel = re(DaybreakPanel, null, re(HelloWorld,null,null));
+	ReactDOM.render(panel, document.getElementById('root'));
 
 })();
