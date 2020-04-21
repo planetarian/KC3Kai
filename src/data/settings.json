@@ -1104,6 +1104,7 @@
 				"type" : "radio",
 				"options" : {
 					"choices" : [
+						[ "daybreak", "Daybreak" ],
 						[ "moonlight", "Moonlight" ],
 						[ "natsuiro", "Natsuiro" ],
 						[ "plain", "Plain" ]
@@ -1260,6 +1261,13 @@
 					"tooltip" : "SettingsPanelCustomCSSTip"
 				}
 			}
+		]
+	},
+	{
+		"section": "Daybreak",
+		"help": "",
+		"contents" : [
+
 		]
 	},
 	{
