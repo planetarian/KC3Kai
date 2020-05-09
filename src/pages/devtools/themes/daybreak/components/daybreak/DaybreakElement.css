@@ -1,0 +1,41 @@
+.db-element {
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-flow: column;
+}
+
+.db-title {
+    flex: 0 1 auto;
+    font-size: 7pt;
+    background: lightskyblue;
+    color: black;
+    
+    user-select: none;
+    cursor: move;
+}
+
+.db-title > span {
+    margin: 1pt 3pt;
+}
+
+.db-title button {
+    line-height: 7pt;
+    padding: 0;
+    margin: 0 1pt;
+    font-size: 6pt;
+    min-width: 10pt;
+}
+
+.db-title .db-title-editbutton {
+    padding: 0 3pt;
+    margin: 0 1pt 0 3pt;
+}
+
+.db-content {
+    flex: 1 1 auto;
+}
+
+.editmode .db-element {
+    background: #ffaaff11;
+}

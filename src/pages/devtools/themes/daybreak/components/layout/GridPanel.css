@@ -1,0 +1,64 @@
+.db-gridpanel {
+    display: grid;
+    height: 100%;
+}
+
+.editmode .db-gridpanel {
+    user-select: none;
+    margin-bottom: 10pt;
+    margin-right: 10pt;
+}
+
+.db-gridpanel-head {
+    border: 1px solid #00000033;
+    margin: 0.5pt;
+    min-width: 10pt;
+    min-height: 10pt;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.db-gridpanel-head span {
+    font-size: 8pt;
+}
+
+.db-gridpanel-head-col {
+    min-width: 20pt;
+}
+
+.db-gridpanel-head-row {
+    min-height: 20pt;
+}
+
+.db-gridpanel-head-row span {
+    transform: rotate(-90deg);
+}
+
+.db-gridpanel-child {
+    position: relative;
+}
+
+.db-gridpanel-child-resizehandle {
+    background: transparent;
+    position: absolute;
+    height: 10pt;
+    width: 10pt;
+    bottom: 0;
+    right: 0;
+    cursor: nwse-resize;
+    border-right: 3pt solid black;
+    border-bottom: 3pt solid black;
+}
+
+.db-gridpanel-resizing .db-gridpanel-child {
+    pointer-events: none;
+}
+
+.db-gridpanel-resizegrid {
+    background: #66ff6622;
+}
+
+.db-gridpanel-resizegrid-active {
+    background: #66ff6677;
+}

@@ -1,0 +1,9 @@
+.db-container-droptarget {
+    height: 100%;
+    min-height: 20pt;
+    min-width: 20pt;
+    background: transparent;
+}
+.db-container-droptarget.db-container-droptarget-over {
+    background: #ccccff99;
+}

@@ -1,0 +1,30 @@
+.db-root-panel {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.db-root-panel > .db-container {
+    flex: 1 1 auto;
+}
+
+.db-root-controls {
+    flex: 0 1 auto;
+}
+
+.db-root-dragpreview {
+    position: absolute;
+
+    padding: 1pt;
+    font-size: 7pt;
+    background: lightskyblue;
+    color: black;
+    
+    pointer-events: none;
+    user-select: none;
+    cursor: move;
+}
+
+.db-nopointer {
+    pointer-events: none;
+}

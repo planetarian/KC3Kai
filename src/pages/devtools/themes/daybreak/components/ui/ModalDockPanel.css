@@ -1,0 +1,75 @@
+:root {
+    --db-button-dock-height: 8pt;
+    --db-button-dock-width: 30pt;
+}
+
+.db-modaldockpanel {
+    position: fixed;
+    display: grid;
+    grid-template-columns: auto 1fr auto 1fr auto;
+    grid-template-rows: auto 1fr auto 1fr auto;
+    background: #333333e7;
+    color: #ffffffcc;
+
+    width: 200pt;
+    height: 200pt;
+}
+
+.db-modaldockpanel-content {
+    grid-area: 2 / 2 / 5 / 5;
+    margin: 8pt 8pt 0 8pt;
+}
+
+.db-modaldockpanel input,
+.db-modaldockpanel button,
+.db-modaldockpanel select,
+.db-modaldockpanel select * {
+    color: #000000cc;
+}
+
+.db-modaldockpanel button {
+    text-align: center;
+}
+
+.db-modaldockpanel > button {
+    color: #00000066;
+    padding: 0;
+    line-height: 4pt;
+    font-size: 8pt;
+}
+
+.db-modaldockpanel .db-button-dock-left span,
+.db-modaldockpanel .db-button-dock-right span {
+    margin-left: -1pt;
+}
+
+.db-modaldockpanel .db-button-dock-up {
+    grid-row: 1;
+    grid-column: 3;
+    width: var(--db-button-dock-width);
+    height: var(--db-button-dock-height);
+}
+
+.db-modaldockpanel .db-button-dock-left {
+    grid-row: 3;
+    grid-column: 1;
+    margin: auto;
+    width: var(--db-button-dock-height);
+    height: var(--db-button-dock-width);
+}
+
+.db-modaldockpanel .db-button-dock-right {
+    grid-row: 3;
+    grid-column: 5;
+    margin: auto;
+    width: var(--db-button-dock-height);
+    height: var(--db-button-dock-width);
+}
+
+.db-modaldockpanel .db-button-dock-down {
+    grid-row: 5;
+    grid-column: 3;
+    margin: auto;
+    width: var(--db-button-dock-width);
+    height: var(--db-button-dock-height);
+}
