@@ -5,13 +5,30 @@ var re = React.createElement;
 DaybreakComponents.registerComponent(class DaybreakLayoutRoot extends React.Component {
     constructor(props) {
         super(props);
+        this.getState(props);
+    }
+
+    componentWillReceiveProps(newProps) {
+        this.getState(newProps);
+    }
+
+    getState = props => {
+        const currentLayoutName = this.state && this.state.currentLayoutName;
+        const flattened = this.state && this.state.flattened;
+
         this.state = {
-            flattened: this.getFlattenedLayout(props.layout.definition),
-            unsaved: props.layout.unsaved,
+            unsaved: props.layoutSystem.currentLayout.unsaved,
             editMode: false,
             draggingId: null,
-            editingCount: 0
+            editingCount: 0,
+            currentLayoutName: props.layoutSystem.currentLayout.name,
+            flattened
         };
+
+        // rebuild flat layout if the layout has changed
+        if (currentLayoutName != props.layoutSystem.currentLayout.name) {
+            this.state.flattened = this.getFlattenedLayout(props.layoutSystem.currentLayout.definition);
+        }
     }
 
     getFlattenedLayout = layout => {
@@ -41,6 +58,7 @@ DaybreakComponents.registerComponent(class DaybreakLayoutRoot extends React.Comp
 
         return flat;
     };
+
     getTreeLayout = flat => {
         const buildTree = el => {
             const element = {
@@ -74,6 +92,7 @@ DaybreakComponents.registerComponent(class DaybreakLayoutRoot extends React.Comp
             editingElementComponent: null
         });
     };
+
     handleEditElement = (element, properties, elementComponent) => {
         this.setState({
             editingCount: this.state.editingCount + 1,
@@ -253,6 +272,7 @@ DaybreakComponents.registerComponent(class DaybreakLayoutRoot extends React.Comp
     };
 
     render() {
+        const {layoutSystem} = this.props;
         const {
             flattened, editMode, draggingFrom,
             editingElement, editingProperties, editingElementComponent,
@@ -265,6 +285,13 @@ DaybreakComponents.registerComponent(class DaybreakLayoutRoot extends React.Comp
         const rootEl = keys.length > 0 ? flattened[keys[0]] : null;
 
         const editor = {
+            allLayouts: layoutSystem.allLayouts,
+            currentLayout: layoutSystem.currentLayout,
+
+            saveLayout: name => layoutSystem.saveLayout(name, this.getTreeLayout(flattened)),
+            applyLayout: layoutSystem.applyLayout,
+            deleteLayout: layoutSystem.deleteLayout,
+
             editMode: editMode,
             getElement: this.getElement,
             editingElement, editingProperties,
@@ -308,15 +335,14 @@ DaybreakComponents.registerComponent(class DaybreakLayoutRoot extends React.Comp
             }),
         ];
         
-        // Backup edit button to be rendered if one hasn't been added to the layout itself
-        // TODO: detect if an edit button has been added to the layout
+        // Backup layout manager to be rendered if one hasn't been added to the layout itself
         const hasLayoutManager = Object.keys(flattened)
             .some(e => flattened[e].component === 'LayoutManager');
         if (!hasLayoutManager) {
             children.push(re(DaybreakComponents.LayoutManager, {editor}));
         }
         
-        // Properties editor
+        // Properties editor, appears when you click the 'edit' button on an element
         if (editingElement) {
             children.push(re(DaybreakComponents.ModalDockPanel, {},
                 re(DaybreakComponents.ComponentEditor, {
@@ -329,7 +355,7 @@ DaybreakComponents.registerComponent(class DaybreakLayoutRoot extends React.Comp
             ));
         };
 
-        // New element picker
+        // New element picker, appears when you click an empty element container
         if (addingToElementId) {
             children.push(re(DaybreakComponents.ModalDockPanel, {},
                 re(DaybreakComponents.ComponentEditor, {

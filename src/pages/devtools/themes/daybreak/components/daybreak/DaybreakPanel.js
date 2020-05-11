@@ -5,7 +5,14 @@ DaybreakComponents.registerComponent(class DaybreakPanel extends React.Component
         super(props);
         this.state = {
 			actionLog: [],
-			layout: null
+			allLayouts: [],
+			currentLayout: {
+				name: "Empty Layout",
+				isSystemLayout: true,
+				definition: {
+					component: "HelloWorld"
+				}
+			}
 		};
 
         this.KC3NetworkListeners = {
@@ -74,20 +81,108 @@ DaybreakComponents.registerComponent(class DaybreakPanel extends React.Component
 		(new RMsg("service", "activateGame", {
 			tabId: chrome.devtools.inspectedWindow.tabId
 		})).execute();
-    }
 
-    render() {
-		let {layout} = this.state;
+		this.applyCurrentLayout();
+	}
+
+	getDefaultLayouts = () => [
+		{
+			name: "Daybreak",
+			isSystemLayout: true,
+			unsaved: false,
+			definition: DaybreakComponents.GridPanel.sampleElement
+		}
+	];
+
+	getLayouts = () => {
+		if (!ConfigManager.pan_db_layouts) {
+			ConfigManager.pan_db_layouts = [];
+		}
+		return this.getDefaultLayouts().concat(ConfigManager.pan_db_layouts);
+	}
+
+	// Get the currently-selected layout and apply it
+	applyCurrentLayout = () => {
+		ConfigManager.loadIfNecessary();
+		let layoutName = ConfigManager.pan_db_layout_sm || "Daybreak";
+		this.applyLayout(layoutName);
+	}
+	
+	// load the layout with the given name and apply it
+	applyLayout = layoutName => {
+		ConfigManager.loadIfNecessary();
+
+		const layouts = this.getLayouts();
+		let layout = null;
+		layout = layouts.find(l => l.name === layoutName);
 		if (!layout) {
-			layout = {
-				name: "",
-				unsaved: true,
-				definition: DaybreakComponents.GridPanel.sampleElement
-			};
+			throw new Error(`Layout ${layoutName} does not exist.`);
 		}
 
+		if (this.state.currentLayout !== layout) {
+			ConfigManager.pan_db_layout_sm = layoutName;
+			ConfigManager.save();
+		}
+
+		this.setState({
+			allLayouts: layouts,
+			currentLayout: layout
+		});
+	}
+
+	// Save a layout with the given name
+	saveLayout = (layoutName, layoutDefinition) => {
+		ConfigManager.loadIfNecessary();
+		const layouts = this.getLayouts();
+		const existing = layouts.find(l => l.name === layoutName);
+		if (existing && existing.isSystemLayout) {
+			throw new Error(`${layoutName} is a system layout and cannot be modified. Please choose a different name.`);
+		}
+		if (existing) {
+			const idx = ConfigManager.pan_db_layouts.indexOf(existing);
+			ConfigManager.pan_db_layouts.splice(idx, 1);
+		}
+
+		ConfigManager.pan_db_layouts.push({
+			name: layoutName,
+			isSystemLayout: false,
+			definition: layoutDefinition
+		});
+		
+		ConfigManager.save();
+	}
+
+	deleteLayout = layoutName => {
+		ConfigManager.loadIfNecessary();
+		const layouts = getLayouts();
+		const existing = layouts.find(l => l.name === layoutName);
+		if (!existing) {
+			throw new Error(`Layout ${layoutName} does not exist.`);
+		}
+		else if (existing.isSystemLayout) {
+			throw new Error(`${layoutName} is a system layout and cannot be modified/deleted.`);
+		}
+
+		const idx = ConfigManager.pan_db_layouts.indexOf(existing);
+		ConfigManager.pan_db_layouts.splice(idx, 1);
+
+		ConfigManager.save();
+	}
+
+    render() {
+		const {currentLayout} = this.state;
+		const {allLayouts} = this.state;
+
+		const layoutSystem = {
+			allLayouts,
+			currentLayout,
+			applyLayout: this.applyLayout,
+			saveLayout:this.saveLayout,
+			deleteLayout: this.deleteLayout
+		};
+
 		const dbRoot = re(DaybreakComponents.DaybreakLayoutRoot, {
-			layout,
+			layoutSystem,
 			data:{...this.state}
 		});
 		return dbRoot;
