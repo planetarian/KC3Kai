@@ -61,7 +61,7 @@ DaybreakComponents.registerComponent(class DaybreakPanel extends React.Component
 		
 		// Start Network listener
 		KC3Network.initConfigs();
-		KC3Network.addGlobalListener(function(event, data){
+		KC3Network.addGlobalListener((event, data) => {
 			let {actionLog} = this.state;
 			if (actionLog.length == 10){
 				actionLog.splice(0,1);				
