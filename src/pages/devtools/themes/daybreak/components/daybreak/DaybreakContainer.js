@@ -45,7 +45,7 @@ DaybreakComponents.registerComponent(class DaybreakContainer extends React.Compo
 			};
 			child = re(DaybreakComponents.DaybreakElement, childProps);
 		}
-		else if (editor.editMode) {
+		else if (editor.editMode && !editor.addingToElementId) {
 			const placeholderProps = {
 				className: 'db-container-droptarget',
 				onPointerEnter: this.onPointerEnter,

@@ -4,8 +4,8 @@ DaybreakComponents.registerComponent(class GridPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            editingRow: 0,
-            editingColumn: 0,
+            addingRow: 0,
+            addingColumn: 0,
             resizingElementId: 0
         };
     }
@@ -275,10 +275,13 @@ DaybreakComponents.registerComponent(class GridPanel extends React.Component {
 
                     // get elements that overlap this space
                     const existing = element.children && element.children.filter(child => {
-                        const {layout} = child.containerProps;
-                        return c >= layout.c && c < layout.c + layout.w &&
-                            r >= layout.r && r < layout.r + layout.h;
-                    }) || [];
+                            const {layout} = child.containerProps;
+                            return c >= layout.c && c < layout.c + layout.w &&
+                                r >= layout.r && r < layout.r + layout.h;
+                        }) || [];
+                    const adding = editor.addingToElementId
+                            && editor.addingContainerProps.layout.c === c
+                            && editor.addingContainerProps.layout.r === r;
                     if (existing.length > 1) {
                         console.debug(`Found more than one element at ${c},${r}`);
                         return;
@@ -287,7 +290,7 @@ DaybreakComponents.registerComponent(class GridPanel extends React.Component {
 
                     // when resizing, draw resize placeholders
                     if (resizingElementId) {
-                        if (elementAt == 0 || elementAt === resizingElementId) {
+                        if (!adding && (!elementAt || elementAt === resizingElementId)) {
                             if ((c === this.resizeMinC || resizeTable[c-1][r])
                             && (r === this.resizeMinR || resizeTable[c][r-1])) {
                                 // max col/row we can possibly resize to

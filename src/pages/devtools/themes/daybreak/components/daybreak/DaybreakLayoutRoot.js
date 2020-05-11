@@ -267,8 +267,10 @@ DaybreakComponents.registerComponent(class DaybreakLayoutRoot extends React.Comp
         const editor = {
             editMode: editMode,
             getElement: this.getElement,
-            editingElement,
-            editingProperties,
+            editingElement, editingProperties,
+            addingToElementId, addingContainerProps,
+            draggingFrom,
+            unsaved,
 
             canEdit: editingCount === 0,
             incEdits: this.incEdits,
@@ -308,13 +310,11 @@ DaybreakComponents.registerComponent(class DaybreakLayoutRoot extends React.Comp
         
         // Backup edit button to be rendered if one hasn't been added to the layout itself
         // TODO: detect if an edit button has been added to the layout
-        const rootControls = [
-            re('button', {onClick:this.handleChangeEditMode}, `edit mode ${editMode ? 'on' : 'off'}`)
-        ];
-        if (unsaved){
-            rootControls.push(re('button', {onClick:this.saveLayout}, 'save'));
+        const hasLayoutManager = Object.keys(flattened)
+            .some(e => flattened[e].component === 'LayoutManager');
+        if (!hasLayoutManager) {
+            children.push(re(DaybreakComponents.LayoutManager, {editor}));
         }
-        children.push(re('div', {className: 'db-root-controls'}, rootControls));
         
         // Properties editor
         if (editingElement) {
