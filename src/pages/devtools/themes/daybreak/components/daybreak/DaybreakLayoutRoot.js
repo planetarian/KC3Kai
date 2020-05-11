@@ -40,14 +40,14 @@ DaybreakComponents.registerComponent(class DaybreakLayoutRoot extends React.Comp
                 id: i,
                 component: el.component,
                 className: el.className,
-                properties: el.properties,
+                properties: el.properties && {...el.properties},
             }
             const flatEl = flat[i];
             if (el.children && el.children.length) {
                 flatEl.children = [];
                 el.children.forEach(child => {
                     flatEl.children.push({
-                        containerProps: child.containerProps,
+                        containerProps: child.containerProps && {...child.containerProps},
                         elementId: walkLayout(child.element)
                     });
                 });
@@ -60,19 +60,18 @@ DaybreakComponents.registerComponent(class DaybreakLayoutRoot extends React.Comp
     };
 
     getTreeLayout = flat => {
-        const buildTree = el => {
+        const walkLayout = el => {
             const element = {
                 component: el.component,
                 className: el.className,
-                properties: el.properties,
+                properties: el.properties && {...el.properties},
             }
             if (el.children && el.children.length) {
                 element.children = [];
-                const {children} = element;
                 el.children.forEach(child =>  {
-                    children.push({
-                        containerProps: child.containerProps,
-                        element: buildTree(flat[child.elementId])
+                    element.children.push({
+                        containerProps: child.containerProps && {...child.containerProps},
+                        element: walkLayout(flat[child.elementId])
                     })
                 });
             }
@@ -209,6 +208,7 @@ DaybreakComponents.registerComponent(class DaybreakLayoutRoot extends React.Comp
         properties.forEach(p => {
             element.properties[p.name] = p.value;
         });
+        element.id = newId;
         element.className = className;
         flattened[newId] = element;
         const el = flattened[addingToElementId];

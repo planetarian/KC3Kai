@@ -100,10 +100,7 @@ DaybreakComponents.registerComponent(class LayoutManager extends React.Component
             children.push(re(DaybreakComponents.ConfirmButton, {onClick: this.handleDeleteClick}, 'delete'));
             children.push(re('button', {onClick: this.handleNewClick}, 'new'));
         }
-
-        if (editor.editMode && editor.unsaved) {
-            children.push(re('button', {onClick:this.saveLayout}, 'save'));
-        }
+        
         const panel = re('div', {className: 'db-root-controls'}, children);
 
         return panel;
